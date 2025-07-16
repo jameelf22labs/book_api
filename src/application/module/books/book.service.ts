@@ -1,12 +1,13 @@
 import { IBook } from "../../entity/IBook";
 import { IUser } from "../../entity/IUser";
 import BadRequestError from "../../errors/BadRequestError";
+import { BookQueryHelper } from "../../helpers";
 import { Books } from "../../models";
 import { CreateBookDto, QueryBookDto } from "./interface/dtos/book.dtos";
 import IBookService from "./interface/service/book.service.interface";
 
 export default class BookService implements IBookService {
-  async createBook(bookDto: CreateBookDto, user?: IUser): Promise<IBook> {
+  async createBook(bookDto: CreateBookDto, user?: IUser): Promise<Books> {
     const books = await Books.create({ ...bookDto, createdBy: user?.id });
     return books.save();
   }
@@ -16,19 +17,19 @@ export default class BookService implements IBookService {
   ): Promise<{ rows: Books[]; count: number }> {
     const { genre, author, title, page, limit } = queryDto;
 
-    const books = await Books.findAndCountAll({
-      where: {
+    const books = await BookQueryHelper.findAllWithPaginated(
+      {
         genre,
         author,
         title,
       },
-
-      limit: limit,
-      offset: (page - 1) * limit,
-    });
+      limit,
+      page
+    );
 
     return books;
   }
+
   async getBookById(bookId: number, user?: IUser): Promise<Books | null> {
     return await Books.findOne({ where: { id: bookId } });
   }
@@ -37,26 +38,21 @@ export default class BookService implements IBookService {
     updatedBookPayload: IBook,
     bookId: number,
     user?: IUser
-  ): Promise<IBook | null> {
+  ): Promise<Books | null> {
     const book = await Books.findOne({ where: { id: bookId } });
+
     if (book === null) {
       throw new BadRequestError(" Book not found ");
     }
 
-    if (
-      user?.id &&
-      typeof user?.id === "string" &&
-      book.createdBy === user?.id
-    ) {
-      const updatedBook = await book.update(
-        { ...updatedBookPayload },
-        { where: { id: bookId } }
-      );
+    await BookQueryHelper.canBookCreatedByUser(book.id, user?.id);
 
-      return updatedBook;
-    }
+    const updatedBook = await book.update(
+      { ...updatedBookPayload },
+      { where: { id: bookId } }
+    );
 
-    throw new BadRequestError("Only created user can edit");
+    return updatedBook;
   }
 
   async deleteBook(bookId: number, user?: IUser) {
@@ -66,18 +62,12 @@ export default class BookService implements IBookService {
       throw new BadRequestError(" Book not found ");
     }
 
-    if (
-      user?.id &&
-      typeof user?.id === "string" &&
-      book.createdBy === user?.id
-    ) {
-      await Books.destroy({
-        where: {
-          id: bookId,
-        },
-      });
-    }
+    await BookQueryHelper.canBookCreatedByUser(book.id, user?.id);
 
-    throw new BadRequestError("Only created user can edit");
+    await Books.destroy({
+      where: {
+        id: bookId,
+      },
+    });
   }
 }

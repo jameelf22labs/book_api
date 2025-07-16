@@ -42,7 +42,7 @@ export class Books extends Model {
 
   @Attribute(DataTypes.INTEGER)
   @NotNull
-  declare createdBy: string;
+  declare createdBy: number;
 
   @Attribute(DataTypes.INTEGER)
   @Default(() => "0.0")

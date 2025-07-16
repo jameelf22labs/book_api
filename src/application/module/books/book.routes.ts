@@ -1,7 +1,6 @@
 import BookService from "./book.service";
 import BookController from "./book.controller";
 import AppRoutes from "../../common/interfaces/AppRoutes";
-import JwtStrategy from "../../strategy/jwt.strategy";
 import JwtMiddleware from "../../middleware/jwt.middleware";
 
 export default class BookRoutes extends AppRoutes {

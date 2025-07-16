@@ -5,7 +5,13 @@ import {
   InferCreationAttributes,
   Model,
 } from "@sequelize/core";
-import { Attribute, AutoIncrement, Default, NotNull, PrimaryKey } from "@sequelize/core/decorators-legacy";
+import {
+  Attribute,
+  AutoIncrement,
+  Default,
+  NotNull,
+  PrimaryKey,
+} from "@sequelize/core/decorators-legacy";
 
 export class Reviews extends Model {
   @Attribute(DataTypes.INTEGER)
@@ -13,13 +19,13 @@ export class Reviews extends Model {
   @AutoIncrement()
   declare id: CreationOptional<number>;
 
-  @Attribute(DataTypes.STRING)
+  @Attribute(DataTypes.INTEGER)
   @NotNull
-  declare bookId: string;
+  declare bookId: number;
 
-  @Attribute(DataTypes.STRING)
+  @Attribute(DataTypes.INTEGER)
   @NotNull
-  declare userId: string;
+  declare userId: number;
 
   @Attribute(DataTypes.INTEGER)
   @Default(() => "0.00")

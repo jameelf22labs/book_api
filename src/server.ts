@@ -3,7 +3,6 @@ import envConfig from "./config/dotenv.confiq";
 
 application().then((app) => {
   app?.listen(envConfig.Port, () => {
-    console.log(envConfig)
     console.log(`Application start on Port ${envConfig.Port}`);
   });
 }).catch((error) => {
