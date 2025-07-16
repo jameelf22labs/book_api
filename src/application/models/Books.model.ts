@@ -36,9 +36,8 @@ export class Books extends Model {
   @Attribute(DataTypes.STRING)
   declare genre: string;
 
-  @Attribute(DataTypes.STRING)
-  @NotNull
-  declare published_year: string;
+  @Attribute(DataTypes.DATE)
+  declare published_year: Date;
 
   @Attribute(DataTypes.INTEGER)
   @NotNull

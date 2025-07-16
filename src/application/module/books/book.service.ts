@@ -14,7 +14,7 @@ export default class BookService implements IBookService {
     const books = await Books.create({
       ...bookDto,
       createdBy: user?.id,
-      createdAt: new Date()
+      createdAt: new Date(),
     });
     return books.save();
   }
@@ -22,18 +22,21 @@ export default class BookService implements IBookService {
   async getBooks(
     queryDto: QueryBookDto
   ): Promise<{ rows: Books[]; count: number }> {
-    const { genre, author, title, page, limit } = queryDto;
+
+    const { genre, author, title, page = 1, limit = 10 } = queryDto;
+
+    const filters: Record<string, any> = {};
+
+    if (genre) filters.genre = genre;
+    if (author) filters.author = author;
+    if (title) filters.title = title;
 
     const books = await BookQueryHelper.findAllWithPaginated(
-      {
-        genre,
-        author,
-        title,
-      },
+      filters,
       limit,
       page
     );
-
+    
     return books;
   }
 
