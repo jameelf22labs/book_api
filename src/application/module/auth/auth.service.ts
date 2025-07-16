@@ -7,22 +7,20 @@ import { IAuthService } from "./interface/service/auth.service.interface";
 import bcrypt from "bcrypt";
 
 export default class AuthService implements IAuthService {
-  async signUp(signUpdto: SignUpDto): Promise<SignupResponse> {
-    const user = await Users.findOne({ where: { email: signUpdto.email } });
+  async signUp(signUpDto: SignUpDto): Promise<SignupResponse> {
+    const user = await Users.findOne({ where: { email: signUpDto.email } });
 
     if (user) {
-      throw new ValidationError("User already Exists");
+      throw new ValidationError("User already exists");
     }
 
     const newUser = await Users.create({
-      ...signUpdto,
-      password: bcrypt.hashSync(signUpdto.password, 10),
+      ...signUpDto,
+      password: bcrypt.hashSync(signUpDto.password, 10),
     });
 
-    await newUser.save();
-
     return {
-      username: signUpdto.email,
+      username: signUpDto.email,
     };
   }
 
@@ -30,7 +28,7 @@ export default class AuthService implements IAuthService {
     const user = await Users.findOne({ where: { email: loginDto.username } });
 
     if (!user) {
-      throw new ValidationError("Bad Credentials");
+      throw new ValidationError("Bad credentials");
     }
 
     const isValidPassword = await bcrypt.compare(
@@ -39,7 +37,7 @@ export default class AuthService implements IAuthService {
     );
 
     if (!isValidPassword) {
-      throw new ValidationError("Bad Credentials");
+      throw new ValidationError("Bad credentials");
     }
 
     const accessToken = JwtStrategy.generateToken({
