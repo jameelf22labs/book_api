@@ -13,5 +13,8 @@ export default class ReviewQueryHelper {
 
     return review;
   }
+
+  static findReviewsByBookId(bookId: number) {
+    return Reviews.findAll({ where: { bookId } });
+  }
 }
-    

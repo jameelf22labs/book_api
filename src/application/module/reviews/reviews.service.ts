@@ -17,7 +17,6 @@ export default class ReviewService implements IReviewService {
     }
 
     await ReviewQueryHelper.hasUserReviewedBook(bookId, user?.id);
-    await BookQueryHelper.updateAverageRating(reviewPayload.rating, bookId);
 
     if (user) {
       const review = await Reviews.create({
@@ -26,6 +25,7 @@ export default class ReviewService implements IReviewService {
         userId: user.id,
       });
       await review.save();
+      await BookQueryHelper.updateAverageRating(bookId);
     }
 
     throw new BadRequestError("User not found");

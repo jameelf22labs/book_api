@@ -1,10 +1,23 @@
 import BadRequestError from "../../errors/BadRequestError";
 import { Books } from "../../models";
+import ReviewQueryHelper from "./review.db.query.helper";
 
 export default class BookQueryHelper {
-  
-  static updateAverageRating(rating: number, bookId: number) {
-      throw new Error("Method not implemented.");
+  static async updateAverageRating(bookId: number) {
+    const reviews = await ReviewQueryHelper.findReviewsByBookId(bookId);
+
+    if (reviews.length === 0) {
+      await Books.update({ averageRating: 0 }, { where: { id: bookId } });
+      return;
+    }
+
+    const total = reviews.reduce((sum, r) => sum + r.rating, 0);
+    const average = total / reviews.length;
+
+    await Books.update(
+      { averageRating: parseFloat(average.toFixed(2)) },
+      { where: { id: bookId } }
+    );
   }
 
   static findAllWithPaginated(

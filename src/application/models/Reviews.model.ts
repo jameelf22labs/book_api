@@ -27,8 +27,8 @@ export class Reviews extends Model {
   @NotNull
   declare userId: number;
 
-  @Attribute(DataTypes.INTEGER)
-  @Default(() => "0.00")
+  @Attribute(DataTypes.FLOAT)
+  @Default(() => 0.0)
   declare rating: number;
 
   @Attribute(DataTypes.STRING)
