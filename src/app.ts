@@ -10,6 +10,7 @@ const application = async () => {
     app.use(express.urlencoded({ extended: true }));
 
     await sequelize.authenticate();
+    await sequelize.sync();
     console.log("Sequelize with Postgres Connected");
 
     const authRoutes = new AuthRoutes();
@@ -18,7 +19,7 @@ const application = async () => {
     app.use("/auth", authRoutes.getRouterInstance());
     app.use("/book", bookRoutes.getRouterInstance());
 
-    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+    app.use((err: any, _req: Request, res: Response) => {
       console.error(err.stack);
       res.status(500).json({ message: "Internal Server Error" });
     });

@@ -17,8 +17,9 @@ export default class AuthController {
         message: "Successfully created an account",
       });
     } catch (error) {
+      console.error(error);
+
       if (error instanceof ValidationError) {
-        console.error(error.stack);
         return response.status(error.statusCode).json({
           message: error.message,
         });
