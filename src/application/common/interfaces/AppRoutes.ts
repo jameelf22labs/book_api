@@ -5,6 +5,7 @@ export default abstract class AppRoutes {
 
   constructor() {
     this.router = Router();
+    this.initRoutes()
   }
 
   getRouterInstance() {
