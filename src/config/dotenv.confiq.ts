@@ -1,28 +1,31 @@
 import dotenv from "dotenv";
+import JwtStrategy from '../application/strategy/jwt.strategy';
 
 dotenv.config();
 
 type PostgressType = {
-  Host: String | undefined;
-  Port: Number | undefined;
-  Username: String | undefined;
-  Password: String | undefined;
+  Host: string ;
+  Port: number ;
+  Username: string ;
+  Password: string ;
 };
 
 
 type EnvConfiqType = {
   Port: Number;
   Postgress: PostgressType;
+  JwtSectret : string
 };
 
 const envConfig: EnvConfiqType = {
   Port: Number(process.env.PORT) || 8080,
   Postgress: {
-    Host: process.env.POSTGRESS_HOST,
+    Host: process.env.POSTGRESS_HOST  || "",
     Port: Number(process.env.POSTGRESS_PORT),
-    Username: process.env.POSTGRESS_USERNAME,
-    Password: process.env.POSTGRESS_PASSWORD,
+    Username: process.env.POSTGRESS_USERNAME || "",
+    Password: process.env.POSTGRESS_PASSWORD as string || "",
   },
+  JwtSectret : process.env.JWT_SECRETS ||  ""
 };
 
 export default envConfig;
