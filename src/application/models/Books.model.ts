@@ -36,21 +36,21 @@ export class Books extends Model {
   @Attribute(DataTypes.STRING)
   declare genre: string;
 
-  @Attribute(DataTypes.DATE)
+  @Attribute(DataTypes.STRING)
   @NotNull
-  declare published_year: Date;
+  declare published_year: string;
 
   @Attribute(DataTypes.INTEGER)
   @NotNull
   declare createdBy: number;
 
-  @Attribute(DataTypes.INTEGER)
-  @Default(() => "0.0")
-  declare averageRating: string;
+  @Attribute(DataTypes.FLOAT)
+  @Default(0.0)
+  declare averageRating: number;
 
   @Attribute(DataTypes.DATE)
   @Default(() => new Date())
-  declare createdAt: Date;
+  declare createdAt: CreationOptional<Date>;
 
   @HasMany(() => Reviews, "bookId")
   declare reviews?: NonAttribute<Reviews[]>;

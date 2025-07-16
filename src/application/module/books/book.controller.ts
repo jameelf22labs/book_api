@@ -6,6 +6,7 @@ import { AuthenticatedRequest } from "../../common/types/AuthenticateRequest";
 
 export default class BookController {
   constructor(private readonly service: IBookService) {}
+
   async httpCreateBooks(
     request: AuthenticatedRequest,
     response: Response,
@@ -17,11 +18,8 @@ export default class BookController {
       }
 
       const user = request.user as IUser;
-
-      const book = await this.service.createBook(
-        request.body as CreateBookDto,
-        user
-      );
+      const bookPayload: CreateBookDto = request.body;
+      const book = await this.service.createBook(bookPayload, user);
 
       return response.status(201).json({
         message: "Book was Created",
@@ -31,6 +29,7 @@ export default class BookController {
       next(error);
     }
   }
+
   async httpGetBooks(
     request: AuthenticatedRequest,
     response: Response,
@@ -42,29 +41,19 @@ export default class BookController {
       }
 
       const query = request.query as unknown as QueryBookDto;
-      const books = this.service.getBooks(query, request.user);
+
+      const books = await this.service.getBooks(query, request.user);
+
       return response.status(200).json({
         message: "Books retrieved successfully",
-        ...books,
+        books,
       });
     } catch (error) {
       next(error);
     }
   }
+
   async httpGetBookById(
-    request: AuthenticatedRequest,
-    response: Response,
-    next: NextFunction
-  ) {
-    try {
-      if (!request.user) {
-        return response.status(401).json({ message: "Unauthorized" });
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
-  async httpUpdateBooks(
     request: AuthenticatedRequest,
     response: Response,
     next: NextFunction
@@ -91,6 +80,40 @@ export default class BookController {
       next(error);
     }
   }
+
+  async httpUpdateBooks(
+    request: AuthenticatedRequest,
+    response: Response,
+    next: NextFunction
+  ) {
+    try {
+      if (!request.user) {
+        return response.status(401).json({ message: "Unauthorized" });
+      }
+
+      const bookId = Number(request.params.id);
+
+      if (isNaN(bookId)) {
+        return response.status(400).json({ message: "Invalid Book ID" });
+      }
+
+      const bookPayload = request.body;
+      const book = await this.service.updateBook(
+        bookPayload,
+        bookId,
+        request.user
+      );
+
+      if (!book) {
+        return response.status(404).json({ message: "Book not found" });
+      }
+
+      return response.status(200).json({ message: "Book updated", book });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async httpDeleteBooks(
     request: AuthenticatedRequest,
     response: Response,

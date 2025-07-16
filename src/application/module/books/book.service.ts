@@ -8,7 +8,14 @@ import IBookService from "./interface/service/book.service.interface";
 
 export default class BookService implements IBookService {
   async createBook(bookDto: CreateBookDto, user?: IUser): Promise<Books> {
-    const books = await Books.create({ ...bookDto, createdBy: user?.id });
+    if (!user?.id) {
+      throw new BadRequestError("User ID is required");
+    }
+    const books = await Books.create({
+      ...bookDto,
+      createdBy: user?.id,
+      createdAt: new Date()
+    });
     return books.save();
   }
 

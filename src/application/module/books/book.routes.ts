@@ -4,6 +4,11 @@ import AppRoutes from "../../common/interfaces/AppRoutes";
 import JwtMiddleware from "../../middleware/jwt.middleware";
 
 export default class BookRoutes extends AppRoutes {
+  constructor() {
+    super();
+    this.initRoutes();
+  }
+
   initRoutes() {
     const service = new BookService();
     const controller = new BookController(service);
@@ -11,31 +16,31 @@ export default class BookRoutes extends AppRoutes {
     this.router.post(
       "",
       JwtMiddleware.verifyToken,
-      controller.httpCreateBooks.bind(controller.httpCreateBooks)
+      controller.httpCreateBooks.bind(controller)
     );
 
     this.router.get(
       "",
       JwtMiddleware.verifyToken,
-      controller.httpGetBooks.bind(controller.httpGetBooks)
+      controller.httpGetBooks.bind(controller)
     );
 
     this.router.get(
       "/:id",
       JwtMiddleware.verifyToken,
-      controller.httpGetBookById.bind(controller.httpGetBookById)
+      controller.httpGetBookById.bind(controller)
     );
 
     this.router.patch(
       "/:id",
       JwtMiddleware.verifyToken,
-      controller.httpUpdateBooks.bind(controller.httpUpdateBooks)
+      controller.httpUpdateBooks.bind(controller)
     );
 
     this.router.delete(
       "/:id",
       JwtMiddleware.verifyToken,
-      controller.httpDeleteBooks.bind(controller.httpDeleteBooks)
+      controller.httpDeleteBooks.bind(controller)
     );
   }
 }

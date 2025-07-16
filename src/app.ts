@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import sequelize from "./application/dbconfiq/sequlize.confiq";
 import AuthRoutes from "./application/module/auth/auth.routes";
 import BookRoutes from "./application/module/books/book.routes";
+import ReviewRoutes from "./application/module/reviews/reviews.routes";
 
 const application = async () => {
   try {
@@ -15,9 +16,11 @@ const application = async () => {
 
     const authRoutes = new AuthRoutes();
     const bookRoutes = new BookRoutes();
+    const reviewRoutes = new ReviewRoutes();
 
     app.use("/auth", authRoutes.getRouterInstance());
     app.use("/book", bookRoutes.getRouterInstance());
+    app.use("/reviews", reviewRoutes.getRouterInstance());
 
     app.use((err: any, _req: Request, res: Response) => {
       console.error(err.stack);
