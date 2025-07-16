@@ -1,9 +1,10 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import envConfig from "../../config/dotenv.confiq";
 import { NextFunction, Request, Response } from "express";
+import { IUser } from "../entity/IUser";
 
 export interface CustomRequest extends Request {
-  user: JwtPayload | string;
+  user: IUser;
 }
 
 export default class JwtMiddleware {
@@ -18,7 +19,7 @@ export default class JwtMiddleware {
     }
 
     const payload = jwt.verify(accessToken as string, envConfig.JwtSectret);
-    (request as CustomRequest).user = payload;
+    (request as CustomRequest).user = payload as IUser;
     next();
   }
 }

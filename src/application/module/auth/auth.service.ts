@@ -42,7 +42,11 @@ export default class AuthService implements IAuthService {
       throw new ValidationError("Bad Credentials");
     }
 
-    const accessToken = JwtStrategy.generateToken(user);
+    const accessToken = JwtStrategy.generateToken({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+    });
 
     return {
       username: loginDto.username,
