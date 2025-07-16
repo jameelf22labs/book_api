@@ -2,6 +2,11 @@ import BadRequestError from "../../errors/BadRequestError";
 import { Books } from "../../models";
 
 export default class BookQueryHelper {
+  
+  static updateAverageRating(rating: number, bookId: number) {
+      throw new Error("Method not implemented.");
+  }
+
   static findAllWithPaginated(
     whereContition: Record<string, any>,
     limit: number,
@@ -14,12 +19,19 @@ export default class BookQueryHelper {
     });
   }
 
-  static canBookCreatedByUser(bookId: number, userId: number = -100) {
-    return Books.findOne({ where: { id: bookId } }).then((book) => {
-      if (book?.createdBy === userId) {
-        return Promise.resolve(book);
-      }
-      return Promise.reject(new BadRequestError("Only Created User Can Crud"));
-    });
+  static async canBookCreatedByUser(bookId: number, userId: number = -100) {
+    const book = await Books.findOne({ where: { id: bookId } });
+
+    if (!book) {
+      throw new BadRequestError("Book not found.");
+    }
+
+    if (book.createdBy !== userId) {
+      throw new BadRequestError(
+        "Only the user who created the book can perform this action."
+      );
+    }
+
+    return book;
   }
 }
