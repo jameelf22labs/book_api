@@ -1,10 +1,9 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import sequelize from "./application/dbconfiq/sequlize.confiq";
 import AuthRoutes from "./application/module/auth/auth.routes";
 import BookRoutes from "./application/module/books/book.routes";
 import ReviewRoutes from "./application/module/reviews/reviews.routes";
-import BadRequestError from "./application/errors/BadRequestError";
-import ValidationError from "./application/errors/ValidationError";
+import globalExceptionHandler from "./middleware/global.error.middleware";
 
 const application = async () => {
   try {
@@ -24,19 +23,7 @@ const application = async () => {
     app.use("/book", bookRoutes.getRouterInstance());
     app.use("/book", reviewRoutes.getRouterInstance());
 
-    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-      console.error(err.stack);
-
-      if (err instanceof BadRequestError) {
-        return res.status(err.statusCode).json({ message: err.message });
-      }
-
-      if (err instanceof ValidationError) {
-        return res.status(err.statusCode).json({ message: err.message });
-      }
-
-      res.status(500).json({ message: "Internal Server Error" });
-    });
+    app.use(globalExceptionHandler);
 
     return app;
   } catch (error) {

@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import JwtStrategy from '../application/strategy/jwt.strategy';
 
 dotenv.config();
 
