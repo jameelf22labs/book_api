@@ -24,15 +24,15 @@ const application = async () => {
     app.use("/book", bookRoutes.getRouterInstance());
     app.use("/book", reviewRoutes.getRouterInstance());
 
-    app.use((err: any, _req: Request, res: Response) => {
+    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       console.error(err.stack);
 
       if (err instanceof BadRequestError) {
-        res.status(err.statusCode).json({ message: err.message });
+        return res.status(err.statusCode).json({ message: err.message });
       }
 
       if (err instanceof ValidationError) {
-        res.status(err.statusCode).json({ message: err.message });
+        return res.status(err.statusCode).json({ message: err.message });
       }
 
       res.status(500).json({ message: "Internal Server Error" });
