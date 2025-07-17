@@ -22,7 +22,6 @@ export default class BookService implements IBookService {
   async getBooks(
     queryDto: QueryBookDto
   ): Promise<{ rows: Books[]; count: number }> {
-
     const { genre, author, title, page = 1, limit = 10 } = queryDto;
 
     const filters: Record<string, any> = {};
@@ -36,7 +35,7 @@ export default class BookService implements IBookService {
       limit,
       page
     );
-    
+
     return books;
   }
 
@@ -55,6 +54,10 @@ export default class BookService implements IBookService {
       throw new BadRequestError(" Book not found ");
     }
 
+    if (book.createdBy !== user?.id) {
+      throw new BadRequestError("Added User only can edit");
+    }
+
     await BookQueryHelper.canBookCreatedByUser(book.id, user?.id);
 
     const updatedBook = await book.update(
@@ -70,6 +73,10 @@ export default class BookService implements IBookService {
 
     if (book === null) {
       throw new BadRequestError(" Book not found ");
+    }
+
+    if (book.createdBy !== user?.id) {
+      throw new BadRequestError("Added User only can drop");
     }
 
     await BookQueryHelper.canBookCreatedByUser(book.id, user?.id);
