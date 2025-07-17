@@ -1,5 +1,5 @@
+import JwtMiddleware from "../../../middleware/jwt.middleware";
 import AppRoutes from "../../common/interfaces/AppRoutes";
-import JwtMiddleware from "../../middleware/jwt.middleware";
 import ReviewController from "./reviews.controller";
 import ReviewService from "./reviews.service";
 
