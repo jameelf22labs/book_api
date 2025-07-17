@@ -2,13 +2,19 @@ import BadRequestError from "../../errors/BadRequestError";
 import { Reviews } from "../../models";
 
 export default class ReviewQueryHelper {
-  static async hasUserReviewedBook(userId: number, bookId: number = -100) {
-    const review = await Reviews.findOne({ where: { userId, bookId } });
+  static async hasUserReviewedBook(userId: number | string, bookId: number) {
+    const parsedUserId = Number(userId);
+
+    if (isNaN(parsedUserId) || !bookId) {
+      throw new BadRequestError("Valid User ID and Book ID are required");
+    }
+
+    const review = await Reviews.findOne({
+      where: { userId: parsedUserId, bookId },
+    });
 
     if (review) {
-      throw new BadRequestError(
-        "Only the user who created the book can perform this action."
-      );
+      throw new BadRequestError("You have already reviewed this book.");
     }
 
     return review;

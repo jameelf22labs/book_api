@@ -5,7 +5,7 @@ import { Books, Reviews, Users } from "../models";
 
 const sequelize = new Sequelize({
   dialect: PostgresDialect,
-  database: "books",
+  database: "api_book",
   user: envConfig.Postgress.Username,
   password: envConfig.Postgress.Password,
   host: envConfig.Postgress.Host,

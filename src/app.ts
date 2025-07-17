@@ -20,7 +20,7 @@ const application = async () => {
 
     app.use("/auth", authRoutes.getRouterInstance());
     app.use("/book", bookRoutes.getRouterInstance());
-    app.use("/reviews", reviewRoutes.getRouterInstance());
+    app.use("/book", reviewRoutes.getRouterInstance());
 
     app.use((err: any, _req: Request, res: Response) => {
       console.error(err.stack);
