@@ -3,6 +3,8 @@ import sequelize from "./application/dbconfiq/sequlize.confiq";
 import AuthRoutes from "./application/module/auth/auth.routes";
 import BookRoutes from "./application/module/books/book.routes";
 import ReviewRoutes from "./application/module/reviews/reviews.routes";
+import BadRequestError from "./application/errors/BadRequestError";
+import ValidationError from "./application/errors/ValidationError";
 
 const application = async () => {
   try {
@@ -24,6 +26,15 @@ const application = async () => {
 
     app.use((err: any, _req: Request, res: Response) => {
       console.error(err.stack);
+
+      if (err instanceof BadRequestError) {
+        res.status(err.statusCode).json({ message: err.message });
+      }
+
+      if (err instanceof ValidationError) {
+        res.status(err.statusCode).json({ message: err.message });
+      }
+
       res.status(500).json({ message: "Internal Server Error" });
     });
 
